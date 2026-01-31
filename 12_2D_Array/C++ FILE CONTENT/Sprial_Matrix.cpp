@@ -1,76 +1,78 @@
-#include <iostream>
+/*
+=========================================================
+Problem Name : Spiral Matrix
+LeetCode     : 54
+Difficulty   : Medium
+---------------------------------------------------------
+Problem:
+Given an m x n matrix, return all elements in spiral order.
+---------------------------------------------------------
+Approach:
+- Maintain four boundaries: srow, erow, scol, ecol
+- Traverse in layers:
+    1. Top row (left → right)
+    2. Right column (top → bottom)
+    3. Bottom row (right → left)
+    4. Left column (bottom → top)
+- Update boundaries after each traversal
+- Continue until boundaries cross
+---------------------------------------------------------
+Time Complexity  : O(m * n)  // each element visited once
+Space Complexity : O(1)      // extra space (excluding output vector)
+=========================================================
+*/
+
+#include <bits/stdc++.h>
 using namespace std;
 
-/*
----------------------------------------------------------
-Function Name  : spiralMatrix
-Purpose        : Print elements of a 2D matrix in
-                 spiral order (clockwise)
-Parameters     :
-    matrix     → 2D array (fixed column size required)
-    n          → number of rows
-    m          → number of columns
----------------------------------------------------------
-*/
-void spiralMatrix(int matrix[4][4], int n, int m)
-{
-    // starting row & column
-    int srow = 0, scol = 0;
+class Solution {
+public:
+    vector<int> spiralOrder(vector<vector<int>>& matrix) {
 
-    // ending row & column
-    int erow = n - 1, ecol = m - 1;
+        // Edge case: empty matrix
+        if(matrix.size() == 0) return {};
 
-    // Loop runs until all elements are printed
-    while (srow <= erow && scol <= ecol)
-    {
-        // 🔹 1. Print TOP ROW (left → right)
-        for (int j = scol; j <= ecol; j++)
-            cout << matrix[srow][j] << " ";
-        srow++; // move top boundary down
+        vector<int> ans;
 
-        // 🔹 2. Print RIGHT COLUMN (top → bottom)
-        for (int i = srow; i <= erow; i++)
-            cout << matrix[i][ecol] << " ";
-        ecol--; // move right boundary left
+        int n = matrix.size();        // number of rows
+        int m = matrix[0].size();     // number of columns
 
-        // 🔹 3. Print BOTTOM ROW (right → left)
-        // Condition prevents duplicate printing
-        if (srow <= erow)
-        {
-            for (int j = ecol; j >= scol; j--)
-                cout << matrix[erow][j] << " ";
-            erow--; // move bottom boundary up
+        // Define boundaries
+        int srow = 0, erow = n - 1;
+        int scol = 0, ecol = m - 1;
+
+        // Loop until boundaries cross
+        while (srow <= erow && scol <= ecol) {
+
+            // 1. Top Row (left → right)
+            for (int j = scol; j <= ecol; j++) {
+                ans.push_back(matrix[srow][j]);
+            }
+            srow++;
+
+            // 2. Right Column (top → bottom)
+            for (int i = srow; i <= erow; i++) {
+                ans.push_back(matrix[i][ecol]);
+            }
+            ecol--;
+
+            // 3. Bottom Row (right → left)
+            if (srow <= erow) {
+                for (int j = ecol; j >= scol; j--) {
+                    ans.push_back(matrix[erow][j]);
+                }
+                erow--;
+            }
+
+            // 4. Left Column (bottom → top)
+            if (scol <= ecol) {
+                for (int i = erow; i >= srow; i--) {
+                    ans.push_back(matrix[i][scol]);
+                }
+                scol++;
+            }
         }
 
-        // 🔹 4. Print LEFT COLUMN (bottom → top)
-        // Condition prevents duplicate printing
-        if (scol <= ecol)
-        {
-            for (int i = erow; i >= srow; i--)
-                cout << matrix[i][scol] << " ";
-            scol++; // move left boundary right
-        }
+        return ans;
     }
-}
-
-/*
----------------------------------------------------------
-Main Function
----------------------------------------------------------
-*/
-int main()
-{
-    // 4x4 matrix initialization
-    int matrix[4][4] = {
-        {1, 2, 3, 4},
-        {5, 6, 7, 8},
-        {9, 10, 11, 12},
-        {13, 14, 15, 16}};
-
-    cout << "Spiral Matrix Output:\n";
-
-    // Function call
-    spiralMatrix(matrix, 4, 4);
-
-    return 0;
-}
+};
